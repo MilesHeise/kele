@@ -15,10 +15,8 @@ class Kele
     if response['message'] == 'Resource not found'
       p 'oh god no'
     else
-      p response['auth_token']
       @auth_token = response['auth_token']
     end
-    p @auth_token
   end
 
   def get_me
@@ -27,6 +25,17 @@ class Kele
         'authorization' => @auth_token
       }
     )
-    p JSON.parse(response.body)
+    JSON.parse(response.body)
+  end
+
+  def get_mentor_availability(id)
+    response = self.class.get(
+      "/mentors/#{id}/student_availability", headers: {
+        'authorization' => @auth_token
+      }, body: {
+        id: id
+      }
+    )
+    JSON.parse(response.body)
   end
 end
