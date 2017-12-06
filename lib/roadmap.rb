@@ -21,22 +21,25 @@ module Roadmap
     JSON.parse(response.body)
   end
 
-  def create_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment)
+  def create_submission(checkpoint_id, options = {})
+    body = {
+      'enrollment_id' => get_me.dig('current_enrollment', 'id'),
+      'checkpoint_id' => checkpoint_id,
+      'assignment_branch' => nil,
+      'assignment_commit_link' => nil,
+      'comment' => nil
+    }
+    final_body = body.merge(options).compact
+
     response = self.class.post(
       '/messages', headers: {
         'authorization' => @auth_token
-      }, body: {
-        'enrollment_id' => get_me.dig('current_enrollment', 'id'),
-        'checkpoint_id' => checkpoint_id,
-        'assignment_branch' => however I do optional,
-        'assignment_commit_link' => however I do optional,
-        'comment' => however I do optional
-      }
+      }, body: final_body
     )
     if response['message']
-      p 'message not sent'
+      p 'checkpoint not submitted'
     else
-      p 'message sent successfully'
+      p 'checkpoint submitted successfully'
     end
   end
 end
