@@ -23,13 +23,14 @@ module Roadmap
 
   def create_submission(checkpoint_id, options = {})
     body = {
-      'enrollment_id' => get_me.dig('current_enrollment', 'id'),
-      'checkpoint_id' => checkpoint_id,
       'assignment_branch' => nil,
       'assignment_commit_link' => nil,
-      'comment' => nil
+      'checkpoint_id' => checkpoint_id,
+      'comment' => nil,
+      'enrollment_id' => get_me.dig('current_enrollment', 'id')
     }
-    final_body = body.merge(options).compact
+
+    final_body = body.merge(options).delete_if { |_k, v| v.nil? }
 
     response = self.class.post(
       '/messages', headers: {
