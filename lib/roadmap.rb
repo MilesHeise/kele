@@ -33,7 +33,7 @@ module Roadmap
     final_body = body.merge(options).delete_if { |_k, v| v.nil? }
 
     response = self.class.post(
-      '/messages', headers: {
+      '/checkpoint_submissions', headers: {
         'authorization' => @auth_token
       }, body: final_body
     )
