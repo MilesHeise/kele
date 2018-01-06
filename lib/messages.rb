@@ -10,17 +10,20 @@ module Messages
     JSON.parse(response.body)
   end
 
-  def create_message(recipient, token = nil, subject, body)
+  def create_message(recipient, subject, body, token = nil)
+    var body = {
+      'sender' => @email,
+      'recipient_id' => recipient,
+      'subject' => subject,
+      'stripped-text' => body
+    }
+
+    body.merge('token' => token) if token.present?
+
     response = self.class.post(
       '/messages', headers: {
         'authorization' => @auth_token
-      }, body: {
-        'sender' => @email,
-        'recipient_id' => recipient,
-        'token' => token,
-        'subject' => subject,
-        'stripped-text' => body
-      }
+      }, body: body
     )
     if response['message']
       p 'message not sent'
